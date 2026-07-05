@@ -7,7 +7,10 @@ defmodule HtmlAsCode.MixProject do
       version: "0.1.0",
       elixir: "~> 1.19",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      source_url: "https://github.com/mbrezu/html_as_code",
+      package: package(),
+      description: "HTML as code in Elixir."
     ]
   end
 
@@ -17,5 +20,16 @@ defmodule HtmlAsCode.MixProject do
     ]
   end
 
-  defp deps, do: []
+  defp deps, do: [
+     {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
+  ]
+
+  defp package() do
+    [
+      # These are the default files included in the package
+      files: ~w(lib priv .formatter.exs mix.exs README.md* LICENSE),
+      licenses: ["Apache-2.0"],
+      links: %{"GitHub" => "https://github.com/mbrezu/html_as_code"}
+    ]
+  end
 end
