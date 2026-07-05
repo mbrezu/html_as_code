@@ -57,6 +57,9 @@ defmodule HtmlAsCode do
 
   def render(node)
 
+  def render(nil), do: []
+  def render(false), do: []
+
   def render({tag, attrs, children}) do
     if MapSet.member?(@void_tags, tag) do
       [
