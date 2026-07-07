@@ -7,39 +7,12 @@ defmodule HtmlAsCode do
     end
   end
 
-  @tags ~w(html head body title meta link style script)a ++
-          ~w(header footer main nav section article aside div span p)a ++
-          ~w(h1 h2 h3 h4 h5 h6)a ++
-          ~w(ul ol li dl dt dd)a ++
-          ~w(table thead tbody tfoot tr th td caption colgroup col)a ++
-          ~w(form input textarea button select option optgroup label fieldset legend)a ++
-          ~w(img picture source audio video track canvas iframe embed object)a ++
-          ~w(a em strong b i u s small sub sup mark code pre kbd samp var q blockquote cite abbr address time data)a ++
-          ~w(br hr wbr)a
+  @tags Code.eval_file("lib/html_tags.exs") |> elem(0)
 
   @void_tags MapSet.new(~w(
     area base br col embed hr img input
     link meta source track wbr
   )a)
-
-  defp children_from_body({:__block__, _, exprs}), do: exprs
-  defp children_from_body(expr), do: [expr]
-
-  defp normalize([]), do: {[], []}
-  defp normalize([[do: body]]), do: {[], children_from_body(body)}
-  defp normalize([attrs]) when is_list(attrs), do: {attrs, []}
-  defp normalize([child]), do: {[], [child]}
-  defp normalize([attrs, [do: body]]), do: {attrs, children_from_body(body)}
-
-  defp emit(tag, {attrs, children}) do
-    quote bind_quoted: [
-            tag: tag,
-            attrs: attrs,
-            children: children
-          ] do
-      {tag, attrs, children}
-    end
-  end
 
   for tag <- @tags do
     defmacro unquote(tag)() do
@@ -54,6 +27,25 @@ defmodule HtmlAsCode do
       emit(unquote(tag), normalize([arg1, arg2]))
     end
   end
+
+  defp emit(tag, {attrs, children}) do
+    quote bind_quoted: [
+            tag: tag,
+            attrs: attrs,
+            children: children
+          ] do
+      {tag, attrs, children}
+    end
+  end
+
+  defp normalize([]), do: {[], []}
+  defp normalize([[do: body]]), do: {[], children_from_body(body)}
+  defp normalize([attrs]) when is_list(attrs), do: {attrs, []}
+  defp normalize([child]), do: {[], [child]}
+  defp normalize([attrs, [do: body]]), do: {attrs, children_from_body(body)}
+
+  defp children_from_body({:__block__, _, exprs}), do: exprs
+  defp children_from_body(expr), do: [expr]
 
   def render(node)
 

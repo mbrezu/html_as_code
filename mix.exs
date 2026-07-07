@@ -4,7 +4,7 @@ defmodule HtmlAsCode.MixProject do
   def project do
     [
       app: :html_as_code,
-      version: "0.1.0",
+      version: "0.1.1",
       elixir: "~> 1.19",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -20,9 +20,10 @@ defmodule HtmlAsCode.MixProject do
     ]
   end
 
-  defp deps, do: [
-     {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
-  ]
+  defp deps,
+    do: [
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
+    ]
 
   defp package() do
     [

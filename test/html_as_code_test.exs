@@ -13,7 +13,7 @@ defmodule HtmlAsCodeTest do
   end
 
   test "without body" do
-    ast = div(class: "container", id: "test")
+    ast = div class: "container", id: "test"
     expect(ast, "<div class=\"container\" id=\"test\"></div>")
   end
 
@@ -47,22 +47,22 @@ defmodule HtmlAsCodeTest do
   end
 
   test "void" do
-    ast = img(src: "image.png")
+    ast = img src: "image.png"
     expect(ast, "<img src=\"image.png\">")
   end
 
   test "script" do
-    ast = script(src: "myscript.js")
+    ast = script src: "myscript.js"
     expect(ast, "<script src=\"myscript.js\"></script>")
   end
 
   test "boolean attributes" do
-    ast = div(filtered_out: nil, also_filtered_out: false, included: true)
+    ast = div filtered_out: nil, also_filtered_out: false, included: true
     expect(ast, "<div included></div>")
   end
 
   test "attributes with dashes" do
-    ast = div("has-dashes": "yes")
+    ast = div "has-dashes": "yes"
     expect(ast, "<div has-dashes=\"yes\"></div>")
   end
 
