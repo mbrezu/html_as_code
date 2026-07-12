@@ -1,2 +1,3 @@
-- [ ] try to find constant parts in the ast and pre-process them into `{:safe, "rendered string"}` at compile time
-    - simplest idea: find constant attributes and pass both `const_attrs` and `attrs` in the tuples.
+- try to find constant parts in the ast and pre-process them into `{:safe, "rendered string"}` at compile time
+    - [x] simplest idea: find constant attributes and pass both `const_attrs` and `attrs` in the tuples.
+    - [ ] next: render whole elements if they have only const attrs and the body is empty or iodata
