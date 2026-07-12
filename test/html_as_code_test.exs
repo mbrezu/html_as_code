@@ -100,6 +100,12 @@ defmodule HtmlAsCodeTest do
     expect(ast, "<div>Always</div>")
   end
 
+  test "do in attrs list" do
+    ast = a href: "/path", do: "link"
+
+    expect(ast, ~s(<a href="/path">link</a>))
+  end
+
   defp expect(ast, expected_result) do
     assert ast |> render |> IO.iodata_to_binary() == expected_result
   end

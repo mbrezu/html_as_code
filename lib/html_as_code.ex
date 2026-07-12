@@ -40,7 +40,14 @@ defmodule HtmlAsCode do
 
   defp normalize([]), do: {[], []}
   defp normalize([[do: body]]), do: {[], children_from_body(body)}
-  defp normalize([attrs]) when is_list(attrs), do: {attrs, []}
+
+  defp normalize([items]) when is_list(items) do
+    attrs = Keyword.delete(items, :do)
+    body = Keyword.get(items, :do)
+
+    {attrs, (if body, do: children_from_body(body), else: [])}
+  end
+
   defp normalize([child]), do: {[], [child]}
   defp normalize([attrs, [do: body]]), do: {attrs, children_from_body(body)}
 
