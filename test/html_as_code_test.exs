@@ -106,6 +106,24 @@ defmodule HtmlAsCodeTest do
     expect(ast, ~s(<a href="/path">link</a>))
   end
 
+  test "constant attrs" do
+    ast = a href: "/path", class: "link", do: "link"
+
+    assert tuple_size(ast) == 4
+    assert elem(ast, 1) == ~s( href="/path" class="link")
+  end
+
+  test "mixed attrs" do
+    toggle = false
+
+    ast = a href: "/path", class: "link", filtered: toggle, do: "link"
+
+    assert tuple_size(ast) == 4
+    assert elem(ast, 1) == ~s( href="/path" class="link")
+
+    expect(ast, ~s(<a href="/path" class="link">link</a>))
+  end
+
   defp expect(ast, expected_result) do
     assert ast |> render |> IO.iodata_to_binary() == expected_result
   end

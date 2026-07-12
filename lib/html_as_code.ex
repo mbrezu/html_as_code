@@ -28,13 +28,26 @@ defmodule HtmlAsCode do
     end
   end
 
+  defp is_const_attr({_key, value}), do: is_binary(value) or is_boolean(value)
+
+  defp split_attrs(attrs) do
+    {
+      attrs |> Enum.filter(&is_const_attr/1),
+      attrs |> Enum.filter(&(not is_const_attr(&1)))
+    }
+  end
+
   defp emit(tag, {attrs, children}) do
+    {const_attrs, var_attrs} = split_attrs(attrs)
+    rendered_const_attrs = const_attrs |> render_attrs() |> IO.iodata_to_binary()
+
     quote bind_quoted: [
             tag: tag,
-            attrs: attrs,
+            rendered_const_attrs: rendered_const_attrs,
+            var_attrs: var_attrs,
             children: children
           ] do
-      {tag, attrs, children}
+      {tag, rendered_const_attrs, var_attrs, children}
     end
   end
 
@@ -45,7 +58,7 @@ defmodule HtmlAsCode do
     attrs = Keyword.delete(items, :do)
     body = Keyword.get(items, :do)
 
-    {attrs, (if body, do: children_from_body(body), else: [])}
+    {attrs, if(body, do: children_from_body(body), else: [])}
   end
 
   defp normalize([child]), do: {[], [child]}
@@ -59,19 +72,21 @@ defmodule HtmlAsCode do
   def render(nil), do: []
   def render(false), do: []
 
-  def render({tag, attrs, children}) do
+  def render({tag, rendered_const_attrs, var_attrs, children}) do
     if MapSet.member?(@void_tags, tag) do
       [
         "<",
         Atom.to_string(tag),
-        render_attrs(attrs),
+        rendered_const_attrs,
+        render_attrs(var_attrs),
         ">"
       ]
     else
       [
         "<",
         Atom.to_string(tag),
-        render_attrs(attrs),
+        rendered_const_attrs,
+        render_attrs(var_attrs),
         ">",
         Enum.map(children, &render/1),
         "</",
