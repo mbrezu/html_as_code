@@ -7,5 +7,5 @@
   ~w(img picture source audio video track canvas iframe embed object)a ++
   ~w(a em strong b i u s small sub sup mark code pre kbd samp var q blockquote cite abbr address time data)a ++
   ~w(br hr wbr)a ++
-  ~w(html base noscript template dialog details summary search datalist output progress meter)a ++
+  ~w(base noscript template dialog details summary search datalist output progress meter)a ++
   ~w(map area dfn ins del ruby rt rp bdi bdo slot param)a
